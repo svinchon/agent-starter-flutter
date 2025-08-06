@@ -1,6 +1,6 @@
 <img src="./.github/assets/app-icon.png" alt="Voice assistant app icon" width="100" height="100">
 
-# Flutter Voice Assistant
+# Flutter Agent Starter
 
 This is a starter template for [LiveKit Agents](https://docs.livekit.io/agents/overview/) that provides a simple voice interface using the [LiveKit Flutter SDK](https://github.com/livekit/client-sdk-flutter).
 
