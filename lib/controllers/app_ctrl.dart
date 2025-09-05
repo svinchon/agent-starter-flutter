@@ -18,6 +18,7 @@ enum ConnectionState { disconnected, connecting, connected }
 
 class AppCtrl extends ChangeNotifier {
   static const uuid = Uuid();
+  static final _logger = Logger('AppCtrl');
 
   // States
   AppScreenState appScreenState = AppScreenState.welcome;
@@ -46,7 +47,7 @@ class AppCtrl extends ChangeNotifier {
     // configure logs for debugging
     Logger.root.level = Level.FINE;
     Logger.root.onRecord.listen((record) {
-      print('${format.format(record.time)}: ${record.message}');
+      debugPrint('${format.format(record.time)}: ${record.message}');
     });
 
     messageCtrl.addListener(() {
@@ -101,7 +102,7 @@ class AppCtrl extends ChangeNotifier {
   }
 
   void connect() async {
-    print("Connect....");
+    _logger.info("Connect....");
     connectionState = ConnectionState.connecting;
     notifyListeners();
 
@@ -117,18 +118,18 @@ class AppCtrl extends ChangeNotifier {
         participantName: participantName,
       );
 
-      print("Fetched Connection Details: $connectionDetails, connecting to room...");
+      _logger.info("Fetched Connection Details: $connectionDetails, connecting to room...");
 
       await room.connect(
         connectionDetails.serverUrl,
         connectionDetails.participantToken,
       );
 
-      print("Connected to room");
+      _logger.info("Connected to room");
 
       await room.localParticipant?.setMicrophoneEnabled(true);
 
-      print("Microphone enabled");
+      _logger.info("Microphone enabled");
 
       connectionState = ConnectionState.connected;
       appScreenState = AppScreenState.agent;
@@ -138,7 +139,7 @@ class AppCtrl extends ChangeNotifier {
 
       notifyListeners();
     } catch (error) {
-      print('Connection error: $error');
+      _logger.severe('Connection error: $error');
 
       connectionState = ConnectionState.disconnected;
       appScreenState = AppScreenState.welcome;
@@ -161,21 +162,21 @@ class AppCtrl extends ChangeNotifier {
   // Start a 20-second timer to check for agent connection
   void _startAgentConnectionTimer() {
     _cancelAgentTimer(); // Cancel any existing timer
-    print("Starting 20-second timer to check for AGENT participant...");
+    _logger.info("Starting 20-second timer to check for AGENT participant...");
 
     _agentConnectionTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       // Check if there's an agent participant
       final hasAgent = room.remoteParticipants.values.any((participant) => participant.isAgent);
 
       if (hasAgent) {
-        print("AGENT participant found, cancelling timer");
+        _logger.info("AGENT participant found, cancelling timer");
         _cancelAgentTimer();
         return;
       }
 
       // If 10 seconds have elapsed and no agent found, disconnect
       if (timer.tick >= 20) {
-        print("No AGENT participant found after 20 seconds, disconnecting...");
+        _logger.warning("No AGENT participant found after 20 seconds, disconnecting...");
         _cancelAgentTimer();
         disconnect();
       }
