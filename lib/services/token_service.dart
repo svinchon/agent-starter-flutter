@@ -47,7 +47,7 @@ class ConnectionDetails {
 /// See https://docs.livekit.io/home/get-started/authentication for more information
 class TokenService {
   static final _logger = Logger('TokenService');
-  
+
   // For hardcoded token usage (development only)
   final String? hardcodedServerUrl = null;
   final String? hardcodedToken = null;

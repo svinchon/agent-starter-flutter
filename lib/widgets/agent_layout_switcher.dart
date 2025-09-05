@@ -49,7 +49,7 @@ class LayoutPosition {
 
 class AgentLayoutSwitcher extends StatelessWidget {
   static final _logger = Logger('AgentLayoutSwitcher');
-  
+
   final AgentLayoutState layoutState;
 
   final Widget Function(BuildContext ctx) transcriptionsBuilder;
